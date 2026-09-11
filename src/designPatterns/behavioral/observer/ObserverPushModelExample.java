@@ -56,10 +56,24 @@ class WeatherStation implements WeatherObservable {
         this.weatherData = new WeatherData(temperature, humidity, pressure);
         notifyObservers();
     }
+
+    public WeatherData getWeatherData() {
+        return weatherData;
+    }
 }
 
 interface WeatherObserver {
     void update(WeatherData data);
+}
+
+class CurrentConditionsDisplay implements WeatherObserver {
+    @Override
+    public void update(WeatherData data) {
+        System.out.println("Current conditions: " +
+                data.getTemperature() + "°C, " +
+                data.getHumidity() + "% humidity, " +
+                data.getPressure() + " hPa");
+    }
 }
 
 class WeatherData {
@@ -88,6 +102,14 @@ class WeatherData {
 
 public class ObserverPushModelExample {
     static void main() {
+        WeatherStation weatherStation = new WeatherStation();
+        CurrentConditionsDisplay currentDisplay = new CurrentConditionsDisplay();
+        CurrentConditionsDisplay currentDisplay2 = new CurrentConditionsDisplay();
 
+        weatherStation.addObserver(currentDisplay);
+        weatherStation.addObserver(currentDisplay2);
+
+        weatherStation.setWeatherData(25.0f, 65.0f, 1013.0f);
+        weatherStation.setWeatherData(26.5f, 70.0f, 1012.5f);
     }
 }
